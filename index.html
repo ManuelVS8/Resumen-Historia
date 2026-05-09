@@ -57,7 +57,6 @@
             overflow: hidden;
         }
 
-        /* Decoration */
         .page-container::before {
             content: '';
             position: absolute;
@@ -66,7 +65,6 @@
             background: linear-gradient(90deg, var(--blue-600), var(--orange), var(--green), var(--purple));
         }
 
-        /* Controls */
         .top-controls {
             position: absolute;
             top: 1.5rem;
@@ -97,7 +95,6 @@
         .lang-flag-btn.active { background: var(--blue-600); }
         .lang-flag-btn.inactive { opacity: .5; }
 
-        /* Header */
         .page-header {
             text-align: center;
             margin: 1rem 0 2.5rem;
@@ -116,7 +113,6 @@
             font-weight: 600;
         }
 
-        /* Accordion System */
         .notes-content { display: flex; flex-direction: column; gap: 1rem; }
         
         .accordion-block {
@@ -125,6 +121,7 @@
             border: 2px solid transparent;
             overflow: hidden;
             transition: box-shadow .3s;
+            background: var(--white);
         }
         .accordion-block:hover { box-shadow: var(--shadow-lg); }
 
@@ -135,9 +132,10 @@
             padding: 1.2rem 1.5rem;
             cursor: pointer;
             user-select: none;
-            background: inherit;
-            transition: background .2s;
+            transition: filter .15s;
         }
+        .accordion-header:hover { filter: brightness(.96); }
+        .accordion-header:active { filter: brightness(.92); }
         
         .header-left { display: flex; align-items: center; gap: 1rem; }
         
@@ -145,17 +143,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 32px; height: 32px;
-            font-size: 1.1rem;
-            color: var(--white);
-            background: var(--blue-600);
-            border-radius: 8px;
+            width: 40px; height: 40px;
+            font-size: 1.25rem;
+            border-radius: 10px;
+            flex-shrink: 0;
         }
 
         .section-title {
             font-size: 1.15rem;
             font-weight: 800;
-            color: var(--blue-dark);
         }
 
         .chevron {
@@ -163,6 +159,7 @@
             transition: transform .3s ease;
             fill: currentColor;
             opacity: 0.5;
+            flex-shrink: 0;
         }
         .accordion-block.open .chevron { transform: rotate(180deg); opacity: 0.8; }
 
@@ -171,44 +168,48 @@
             overflow: hidden;
             transition: max-height .4s ease, padding .4s ease;
             padding: 0 1.5rem;
-            background: #ffffff; /* Fondo blanco puro para el contenido */
-            border-top: 1px solid rgba(0,0,0,0.05); /* Línea sutil de separación */
+            background: var(--white);
         }
         .accordion-block.open .accordion-content {
-            max-height: 2000px; 
-            padding: 1.5rem;
+            max-height: 2000px;
+            padding: 0 1.5rem 1.5rem;
         }
 
-        /* Section Colors (Solo cabeceras) */
-        .blue { background: var(--blue-light); border-color: #bfdbfe; }
+        .blue .accordion-header { background: var(--blue-light); }
         .blue .section-icon { background: var(--blue-600); }
         .blue .section-title { color: var(--blue-700); }
+        .blue .accordion-block, .blue { border-color: #bfdbfe; }
 
-        .orange { background: var(--orange-light); border-color: #fed7aa; }
+        .orange .accordion-header { background: var(--orange-light); }
         .orange .section-icon { background: var(--orange-700); }
         .orange .section-title { color: var(--orange-700); }
+        .orange .accordion-block, .orange { border-color: #fed7aa; }
 
-        .green { background: var(--green-light); border-color: #a7f3d0; }
+        .green .accordion-header { background: var(--green-light); }
         .green .section-icon { background: var(--green); }
         .green .section-title { color: var(--green); }
+        .green .accordion-block, .green { border-color: #a7f3d0; }
 
-        .purple { background: var(--purple-light); border-color: #c4b5fd; }
+        .purple .accordion-header { background: var(--purple-light); }
         .purple .section-icon { background: var(--purple); }
         .purple .section-title { color: var(--purple); }
+        .purple .accordion-block, .purple { border-color: #c4b5fd; }
 
-        .teal { background: var(--teal-light); border-color: #99f6e4; }
+        .teal .accordion-header { background: var(--teal-light); }
         .teal .section-icon { background: var(--teal); }
         .teal .section-title { color: var(--teal); }
+        .teal .accordion-block, .teal { border-color: #99f6e4; }
 
-        .rose { background: var(--rose-light); border-color: #fecdd3; }
+        .rose .accordion-header { background: var(--rose-light); }
         .rose .section-icon { background: var(--rose); }
         .rose .section-title { color: var(--rose); }
+        .rose .accordion-block, .rose { border-color: #fecdd3; }
 
-        .amber { background: var(--amber-light); border-color: #fde68a; }
+        .amber .accordion-header { background: var(--amber-light); }
         .amber .section-icon { background: var(--amber); }
         .amber .section-title { color: var(--amber); }
+        .amber .accordion-block, .amber { border-color: #fde68a; }
 
-        /* Content Typography */
         .section-text {
             font-size: .95rem;
             color: #374151;
@@ -235,7 +236,6 @@
             gap: 6px;
         }
 
-        /* Source list */
         .source-list {
             list-style: none; padding: 0;
             display: grid; grid-template-columns: 1fr 1fr;
@@ -251,21 +251,18 @@
         }
         .orange .source-list li::before { color: var(--orange); }
 
-        /* Eras Grid (Prehistory & History) */
         .eras-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
             margin-top: 1rem;
         }
-        .history-grid {
-            grid-template-columns: repeat(4, 1fr);
-        }
+        .history-grid { grid-template-columns: repeat(4, 1fr); }
         .era-card {
-            background: rgba(255,255,255,.8);
+            background: var(--white);
             border-radius: 12px;
             padding: 1rem;
-            border: 1.5px solid rgba(0,0,0,.05);
+            border: 1.5px solid rgba(0,0,0,.08);
             box-shadow: 0 2px 4px rgba(0,0,0,.05);
             display: flex;
             flex-direction: column;
@@ -283,7 +280,7 @@
             font-weight: 700;
             text-align: center;
             color: var(--gray-600);
-            background: rgba(0,0,0,.05);
+            background: var(--gray-50);
             padding: 4px;
             border-radius: 6px;
         }
@@ -298,12 +295,8 @@
             color: var(--gray-600);
             line-height: 1.5;
         }
-        .era-details li {
-            margin-left: 1rem;
-            margin-bottom: .2rem;
-        }
+        .era-details li { margin-left: 1rem; margin-bottom: .2rem; }
 
-        /* Colors for Eras */
         .paleolith .era-title { color: var(--blue-700); }
         .neolith .era-title { color: var(--green); }
         .metals .era-title { color: var(--amber); }
@@ -312,7 +305,6 @@
         .modern .era-title { color: var(--purple); }
         .contemp .era-title { color: var(--rose); }
 
-        /* Timeline visual */
         .timeline-visual {
             display: flex; align-items: center; justify-content: center;
             margin: 1rem 0 .5rem; padding: 0 .5rem;
@@ -330,11 +322,10 @@
         .tl-line::before { left: 0; background: var(--blue-600); }
         .tl-line::after { right: 0; background: var(--orange); }
 
-        /* AC/DC badges */
         .acdc-row { display: flex; gap: .8rem; margin: .8rem 0 .3rem; flex-wrap: wrap; }
         .acdc-badge {
             display: flex; align-items: center; gap: .6rem;
-            background: #f0f2ff; border: 2px solid var(--blue-600);
+            background: var(--gray-50); border: 2px solid var(--blue-600);
             border-radius: 12px; padding: .8rem 1rem; flex: 1; min-width: 200px;
         }
         .acdc-badge.orange-badge { background: #fff7ed; border-color: var(--orange); }
@@ -342,16 +333,14 @@
         .orange-badge .acdc-abbr { color: var(--orange-700); }
         .acdc-desc { font-size: .88rem; color: #555; line-height: 1.4; }
 
-        /* Heritage grid */
         .heritage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: .8rem; }
         .heritage-card {
-            background: rgba(255,255,255,.7); border-radius: 12px;
+            background: var(--gray-50); border-radius: 12px;
             padding: 1rem; border: 1.5px solid rgba(0,0,0,.08);
         }
         .heritage-card-title { font-weight: 800; font-size: .95rem; margin-bottom: .3rem; color: var(--teal); }
         .heritage-card-text { font-size: .88rem; color: #555; line-height: 1.5; }
 
-        /* Remember box */
         .remember-box {
             background: linear-gradient(135deg, #1e3a8a, #0f172a);
             color: white; border-radius: var(--radius); padding: 1.5rem; margin-top: .5rem;
@@ -364,7 +353,6 @@
         .remember-box p { font-size: .95rem; line-height: 1.7; color: #dbeafe; }
         .remember-box strong { color: var(--orange); }
 
-        /* Responsive */
         @media (max-width: 700px) {
             .eras-grid, .history-grid { grid-template-columns: 1fr; }
             .source-list { grid-template-columns: 1fr; }
@@ -376,13 +364,12 @@
             .acdc-row { flex-direction: column; }
             .heritage-grid { grid-template-columns: 1fr; }
             .accordion-header { padding: 1rem; }
-            .accordion-block.open .accordion-content { padding: 1rem; }
+            .accordion-block.open .accordion-content { padding: 0 1rem 1rem; }
         }
     </style>
 </head>
 <body>
 <div class="page-container">
-    <!-- Top Controls -->
     <div class="top-controls">
         <div class="lang-pill">
             <button class="lang-flag-btn active" id="flagEN" data-lang="en" title="English">🇬🇧</button>
@@ -390,16 +377,13 @@
         </div>
     </div>
 
-    <!-- Header -->
     <div class="page-header">
         <h1 class="notranslate" data-i18n="mainTitle">History</h1>
         <div class="subtitle notranslate" data-i18n="mainSubtitle">Key Concepts</div>
     </div>
 
-    <!-- Content -->
     <div class="notes-content">
 
-        <!-- 1. What is History? -->
         <div class="accordion-block blue">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <div class="header-left">
@@ -413,7 +397,6 @@
             </div>
         </div>
 
-        <!-- 2. Historical Sources -->
         <div class="accordion-block orange">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <div class="header-left">
@@ -433,13 +416,12 @@
                     <ul class="source-list">
                         <li class="notranslate" data-i18n="s2Material"><strong>Material sources:</strong> buildings, tools, coins, sculptures…</li>
                         <li class="notranslate" data-i18n="s2Oral"><strong>Oral sources:</strong> stories and traditions passed down from generation to generation.</li>
-                        <li class="notranslate" data-i18n="s2Visual"><strong>Visual sources:</strong> paintings, photographs, maps…</li>
+                        <li class="notranslate" data-i18n="s2Visual"><strong>Graphic sources:</strong> paintings, photographs, maps…</li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <!-- 3. Historical Time -->
         <div class="accordion-block green">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <div class="header-left">
@@ -449,7 +431,7 @@
                 <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
             </div>
             <div class="accordion-content">
-                <div class="sub-section" style="margin-top:0">
+                <div class="sub-section">
                     <div class="sub-title notranslate" data-i18n="s3_1Title">🕒 Chronological order</div>
                     <div class="section-text notranslate" data-i18n="s3_1Text">Chronological order means putting events in order by the <strong>date they happened</strong>, from the oldest to the most recent.</div>
                 </div>
@@ -481,7 +463,6 @@
             </div>
         </div>
 
-        <!-- 4. Prehistory -->
         <div class="accordion-block amber">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <div class="header-left">
@@ -530,7 +511,6 @@
             </div>
         </div>
 
-        <!-- 5. History -->
         <div class="accordion-block rose">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <div class="header-left">
@@ -578,7 +558,6 @@
             </div>
         </div>
 
-        <!-- 6. Generations and Family Tree -->
         <div class="accordion-block purple">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <div class="header-left">
@@ -588,7 +567,7 @@
                 <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
             </div>
             <div class="accordion-content">
-                <div class="sub-section" style="margin-top:0">
+                <div class="sub-section">
                     <div class="sub-title notranslate" data-i18n="s6_1Title">👥 The generation</div>
                     <div class="section-text notranslate" data-i18n="s6_1Text">A generation is a <strong>group of people born at about the same time</strong>. Because of this, they have lived through similar historical events.</div>
                     <div class="section-text notranslate" data-i18n="s6_1Example" style="font-style:italic; color:#6b7280;">For example: your grandparents belong to one generation, your parents to a different one, and you belong to a different generation from them.</div>
@@ -607,7 +586,6 @@
             </div>
         </div>
 
-        <!-- 7. Cultural Heritage -->
         <div class="accordion-block teal">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <div class="header-left">
@@ -632,7 +610,6 @@
             </div>
         </div>
 
-        <!-- Remember -->
         <div class="remember-box">
             <div class="remember-label notranslate" data-i18n="rememberLabel">💡 Remember</div>
             <p class="notranslate" data-i18n="rememberText">History teaches us to know our past in order to understand the present and build a better future. <strong>Historical sources, chronological order, the calendar, generations and cultural heritage</strong> are essential tools for studying it.</p>
@@ -642,13 +619,23 @@
 </div>
 
 <script>
-    // Accordion Logic
-    function toggleAccordion(header) {
-        const block = header.parentElement;
-        block.classList.toggle('open');
+    /* ── Sonido tap ── */
+    var tapSound = new Audio('https://raw.githubusercontent.com/ManuelVS8/Efectos_audio/refs/heads/main/Tap.mp3');
+    tapSound.preload = 'auto';
+    tapSound.volume = 0.6;
+
+    function playTap() {
+        tapSound.currentTime = 0;
+        tapSound.play().catch(function(){});
     }
 
-    // Language Logic
+    /* ── Acordeón ── */
+    function toggleAccordion(header) {
+        playTap();
+        header.parentElement.classList.toggle('open');
+    }
+
+    /* ── Idioma ── */
     let currentLang = 'en';
 
     const translations = {
@@ -663,7 +650,7 @@
             s2NonWrittenTitle: "🗿 Non-written sources",
             s2Material: "<strong>Material sources:</strong> buildings, tools, coins, sculptures…",
             s2Oral: "<strong>Oral sources:</strong> stories and traditions passed down from generation to generation.",
-            s2Visual: "<strong>Visual sources:</strong> paintings, photographs, maps…",
+            s2Visual: "<strong>Graphic sources:</strong> paintings, photographs, maps…",
             s3Title: "Historical Time",
             s3_1Title: "🕒 Chronological order", s3_1Text: "Chronological order means putting events in order by the <strong>date they happened</strong>, from the oldest to the most recent.",
             s3_2Title: "📏 The timeline", s3_2Text: "A timeline shows historical events on a straight line. The <strong>oldest events</strong> are on the left and the <strong>most recent</strong> are on the right.",
@@ -720,7 +707,7 @@
             s2NonWrittenTitle: "🗿 Fuentes no escritas",
             s2Material: "<strong>Fuentes materiales:</strong> edificios, herramientas, monedas, esculturas…",
             s2Oral: "<strong>Fuentes orales:</strong> relatos y tradiciones transmitidos de generación en generación.",
-            s2Visual: "<strong>Fuentes visuales:</strong> pinturas, fotografías, mapas…",
+            s2Visual: "<strong>Fuentes gráficas:</strong> pinturas, fotografías, mapas…",
             s3Title: "El Tiempo Histórico",
             s3_1Title: "🕒 El orden cronológico", s3_1Text: "El orden cronológico consiste en ordenar los sucesos según la <strong>fecha en que ocurrieron</strong>, desde el más antiguo hasta el más reciente.",
             s3_2Title: "📏 La línea del tiempo", s3_2Text: "La línea del tiempo permite representar los acontecimientos históricos sobre una línea recta. Los hechos <strong>más antiguos</strong> se sitúan a la izquierda y los <strong>más recientes</strong>, a la derecha.",
@@ -771,9 +758,10 @@
     function t(key) { return (translations[currentLang] && translations[currentLang][key]) || translations['en'][key] || key; }
 
     function applyLanguage(lang) {
+        playTap();
         currentLang = lang;
         document.documentElement.lang = lang;
-        document.querySelectorAll('[data-i18n]').forEach(el => {
+        document.querySelectorAll('[data-i18n]').forEach(function(el) {
             const key = el.getAttribute('data-i18n');
             const val = t(key);
             if (val !== undefined) el.innerHTML = val;
@@ -789,8 +777,8 @@
         }
     }
 
-    document.getElementById('flagEN').onclick = () => applyLanguage('en');
-    document.getElementById('flagES').onclick = () => applyLanguage('es');
+    document.getElementById('flagEN').onclick = function() { applyLanguage('en'); };
+    document.getElementById('flagES').onclick = function() { applyLanguage('es'); };
 </script>
 </body>
 </html>

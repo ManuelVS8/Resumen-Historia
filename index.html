@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en" translate="no" class="notranslate">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="google" content="notranslate">
+    <title>History</title>
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/ManuelVS8/Audios-juegos-SCIENCE/refs/heads/main/icono.ico">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --blue-dark: #0f172a;
+            --blue-700: #1e3a8a;
+            --blue-600: #2563eb;
+            --blue-light: #eff6ff;
+            --orange: #f59e42;
+            --orange-700: #c2410c;
+            --orange-light: #fff7ed;
+            --white: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-200: #e5e7eb;
+            --gray-600: #4b5563;
+            --green: #059669;
+            --green-light: #ecfdf5;
+            --purple: #7c3aed;
+            --purple-light: #f5f3ff;
+            --teal: #0d9488;
+            --teal-light: #f0fdfa;
+            --rose: #e11d48;
+            --rose-light: #fff1f2;
+            --amber: #d97706;
+            --amber-light: #fffbeb;
+            --radius: 16px;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 24px 12px 48px;
+            color: #1f2937;
+        }
+
+        .page-container {
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decoration */
+        .page-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--blue-600), var(--orange), var(--green), var(--purple));
+        }
+
+        /* Controls */
+        .top-controls {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 20;
+        }
+        .lang-pill {
+            display: flex;
+            align-items: center;
+            background: var(--gray-50);
+            border: 2px solid var(--blue-600);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .lang-flag-btn {
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 6px 10px;
+            border: none;
+            background: transparent;
+            transition: all .2s;
+            line-height: 1;
+        }
+        .lang-flag-btn:hover:not(.active) { background: var(--blue-light); }
+        .lang-flag-btn.active { background: var(--blue-600); }
+        .lang-flag-btn.inactive { opacity: .5; }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            margin: 1rem 0 2.5rem;
+            padding-right: 90px;
+        }
+        .page-header h1 {
+            color: var(--blue-dark);
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+        .page-header .subtitle {
+            color: var(--blue-600);
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin-top: .3rem;
+            font-weight: 600;
+        }
+
+        /* Accordion System */
+        .notes-content { display: flex; flex-direction: column; gap: 1rem; }
+        
+        .accordion-block {
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            overflow: hidden;
+            transition: box-shadow .3s;
+        }
+        .accordion-block:hover { box-shadow: var(--shadow-lg); }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 1.5rem;
+            cursor: pointer;
+            user-select: none;
+            background: inherit;
+            transition: background .2s;
+        }
+        
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        
+        .section-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px; height: 32px;
+            font-size: 1.1rem;
+            color: var(--white);
+            background: var(--blue-600);
+            border-radius: 8px;
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--blue-dark);
+        }
+
+        .chevron {
+            width: 24px; height: 24px;
+            transition: transform .3s ease;
+            fill: currentColor;
+            opacity: 0.5;
+        }
+        .accordion-block.open .chevron { transform: rotate(180deg); opacity: 0.8; }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .4s ease, padding .4s ease;
+            padding: 0 1.5rem;
+            background: #ffffff; /* Fondo blanco puro para el contenido */
+            border-top: 1px solid rgba(0,0,0,0.05); /* Línea sutil de separación */
+        }
+        .accordion-block.open .accordion-content {
+            max-height: 2000px; 
+            padding: 1.5rem;
+        }
+
+        /* Section Colors (Solo cabeceras) */
+        .blue { background: var(--blue-light); border-color: #bfdbfe; }
+        .blue .section-icon { background: var(--blue-600); }
+        .blue .section-title { color: var(--blue-700); }
+
+        .orange { background: var(--orange-light); border-color: #fed7aa; }
+        .orange .section-icon { background: var(--orange-700); }
+        .orange .section-title { color: var(--orange-700); }
+
+        .green { background: var(--green-light); border-color: #a7f3d0; }
+        .green .section-icon { background: var(--green); }
+        .green .section-title { color: var(--green); }
+
+        .purple { background: var(--purple-light); border-color: #c4b5fd; }
+        .purple .section-icon { background: var(--purple); }
+        .purple .section-title { color: var(--purple); }
+
+        .teal { background: var(--teal-light); border-color: #99f6e4; }
+        .teal .section-icon { background: var(--teal); }
+        .teal .section-title { color: var(--teal); }
+
+        .rose { background: var(--rose-light); border-color: #fecdd3; }
+        .rose .section-icon { background: var(--rose); }
+        .rose .section-title { color: var(--rose); }
+
+        .amber { background: var(--amber-light); border-color: #fde68a; }
+        .amber .section-icon { background: var(--amber); }
+        .amber .section-title { color: var(--amber); }
+
+        /* Content Typography */
+        .section-text {
+            font-size: .95rem;
+            color: #374151;
+            line-height: 1.7;
+            margin-bottom: .8rem;
+        }
+        .section-text strong { font-weight: 700; }
+        .blue .section-text strong { color: var(--blue-600); }
+        .orange .section-text strong { color: var(--orange-700); }
+        .green .section-text strong { color: var(--green); }
+        .purple .section-text strong { color: var(--purple); }
+        .teal .section-text strong { color: var(--teal); }
+        .rose .section-text strong { color: var(--rose); }
+        .amber .section-text strong { color: var(--amber); }
+
+        .sub-section { margin-top: 1rem; }
+        .sub-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--blue-dark);
+            margin-bottom: .4rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Source list */
+        .source-list {
+            list-style: none; padding: 0;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: .4rem 1rem; margin-top: .4rem;
+        }
+        .source-list li {
+            font-size: .9rem; color: #4b5563;
+            line-height: 1.5; padding-left: 1.2rem; position: relative;
+        }
+        .source-list li::before {
+            content: '•'; position: absolute; left: 0;
+            color: var(--blue-600); font-weight: 900; font-size: 1.1rem;
+        }
+        .orange .source-list li::before { color: var(--orange); }
+
+        /* Eras Grid (Prehistory & History) */
+        .eras-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .history-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .era-card {
+            background: rgba(255,255,255,.8);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1.5px solid rgba(0,0,0,.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,.05);
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+        .era-title {
+            font-weight: 800;
+            font-size: 1rem;
+            text-align: center;
+            padding-bottom: .5rem;
+            border-bottom: 2px solid rgba(0,0,0,.1);
+        }
+        .era-date {
+            font-size: .8rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--gray-600);
+            background: rgba(0,0,0,.05);
+            padding: 4px;
+            border-radius: 6px;
+        }
+        .era-main-point {
+            font-size: .9rem;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .era-details {
+            font-size: .85rem;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+        .era-details li {
+            margin-left: 1rem;
+            margin-bottom: .2rem;
+        }
+
+        /* Colors for Eras */
+        .paleolith .era-title { color: var(--blue-700); }
+        .neolith .era-title { color: var(--green); }
+        .metals .era-title { color: var(--amber); }
+        .ancient .era-title { color: var(--orange-700); }
+        .middle .era-title { color: var(--gray-600); }
+        .modern .era-title { color: var(--purple); }
+        .contemp .era-title { color: var(--rose); }
+
+        /* Timeline visual */
+        .timeline-visual {
+            display: flex; align-items: center; justify-content: center;
+            margin: 1rem 0 .5rem; padding: 0 .5rem;
+        }
+        .tl-label { font-size: .85rem; font-weight: 800; color: var(--blue-600); white-space: nowrap; padding: 4px 8px; }
+        .tl-line {
+            flex: 1; height: 4px;
+            background: linear-gradient(90deg, var(--blue-600), var(--orange));
+            border-radius: 2px; position: relative; min-width: 60px;
+        }
+        .tl-line::before, .tl-line::after {
+            content: ''; position: absolute; top: -5px;
+            width: 14px; height: 14px; border-radius: 50%;
+        }
+        .tl-line::before { left: 0; background: var(--blue-600); }
+        .tl-line::after { right: 0; background: var(--orange); }
+
+        /* AC/DC badges */
+        .acdc-row { display: flex; gap: .8rem; margin: .8rem 0 .3rem; flex-wrap: wrap; }
+        .acdc-badge {
+            display: flex; align-items: center; gap: .6rem;
+            background: #f0f2ff; border: 2px solid var(--blue-600);
+            border-radius: 12px; padding: .8rem 1rem; flex: 1; min-width: 200px;
+        }
+        .acdc-badge.orange-badge { background: #fff7ed; border-color: var(--orange); }
+        .acdc-abbr { font-size: 1.4rem; font-weight: 900; color: var(--blue-600); line-height: 1; }
+        .orange-badge .acdc-abbr { color: var(--orange-700); }
+        .acdc-desc { font-size: .88rem; color: #555; line-height: 1.4; }
+
+        /* Heritage grid */
+        .heritage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: .8rem; }
+        .heritage-card {
+            background: rgba(255,255,255,.7); border-radius: 12px;
+            padding: 1rem; border: 1.5px solid rgba(0,0,0,.08);
+        }
+        .heritage-card-title { font-weight: 800; font-size: .95rem; margin-bottom: .3rem; color: var(--teal); }
+        .heritage-card-text { font-size: .88rem; color: #555; line-height: 1.5; }
+
+        /* Remember box */
+        .remember-box {
+            background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            color: white; border-radius: var(--radius); padding: 1.5rem; margin-top: .5rem;
+            box-shadow: var(--shadow-lg);
+        }
+        .remember-box .remember-label {
+            font-size: .9rem; font-weight: 800; color: var(--orange);
+            text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: .6rem;
+        }
+        .remember-box p { font-size: .95rem; line-height: 1.7; color: #dbeafe; }
+        .remember-box strong { color: var(--orange); }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            .eras-grid, .history-grid { grid-template-columns: 1fr; }
+            .source-list { grid-template-columns: 1fr; }
+            .page-header { padding-right: 80px; margin-top: 1rem; }
+        }
+        @media (max-width: 480px) {
+            .page-container { padding: 1rem; }
+            .top-controls { top: 1rem; right: 1rem; }
+            .acdc-row { flex-direction: column; }
+            .heritage-grid { grid-template-columns: 1fr; }
+            .accordion-header { padding: 1rem; }
+            .accordion-block.open .accordion-content { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="page-container">
+    <!-- Top Controls -->
+    <div class="top-controls">
+        <div class="lang-pill">
+            <button class="lang-flag-btn active" id="flagEN" data-lang="en" title="English">🇬🇧</button>
+            <button class="lang-flag-btn inactive" id="flagES" data-lang="es" title="Español">🇪🇸</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="page-header">
+        <h1 class="notranslate" data-i18n="mainTitle">History</h1>
+        <div class="subtitle notranslate" data-i18n="mainSubtitle">Key Concepts</div>
+    </div>
+
+    <!-- Content -->
+    <div class="notes-content">
+
+        <!-- 1. What is History? -->
+        <div class="accordion-block blue">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <div class="header-left">
+                    <span class="section-icon notranslate" data-i18n="num1">📖</span>
+                    <div class="section-title notranslate" data-i18n="s1Title">What is History?</div>
+                </div>
+                <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="accordion-content">
+                <div class="section-text notranslate" data-i18n="s1Text">History is the subject that studies the <strong>past of humanity</strong>. Thanks to History, we can understand how people lived in the past and understand the world we live in today much better.</div>
+            </div>
+        </div>
+
+        <!-- 2. Historical Sources -->
+        <div class="accordion-block orange">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <div class="header-left">
+                    <span class="section-icon notranslate" data-i18n="num2">🗺️</span>
+                    <div class="section-title notranslate" data-i18n="s2Title">Historical Sources</div>
+                </div>
+                <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="accordion-content">
+                <div class="section-text notranslate" data-i18n="s2Intro">Historical sources are all the things that give us <strong>information about the past</strong>. There are different types:</div>
+                <div class="sub-section">
+                    <div class="sub-title notranslate" data-i18n="s2WrittenTitle">✍️ Written sources</div>
+                    <div class="section-text notranslate" data-i18n="s2WrittenText">Documents, letters, books, laws…</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title notranslate" data-i18n="s2NonWrittenTitle">🗿 Non-written sources</div>
+                    <ul class="source-list">
+                        <li class="notranslate" data-i18n="s2Material"><strong>Material sources:</strong> buildings, tools, coins, sculptures…</li>
+                        <li class="notranslate" data-i18n="s2Oral"><strong>Oral sources:</strong> stories and traditions passed down from generation to generation.</li>
+                        <li class="notranslate" data-i18n="s2Visual"><strong>Visual sources:</strong> paintings, photographs, maps…</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Historical Time -->
+        <div class="accordion-block green">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <div class="header-left">
+                    <span class="section-icon notranslate" data-i18n="num3">⏳</span>
+                    <div class="section-title notranslate" data-i18n="s3Title">Historical Time</div>
+                </div>
+                <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="accordion-content">
+                <div class="sub-section" style="margin-top:0">
+                    <div class="sub-title notranslate" data-i18n="s3_1Title">🕒 Chronological order</div>
+                    <div class="section-text notranslate" data-i18n="s3_1Text">Chronological order means putting events in order by the <strong>date they happened</strong>, from the oldest to the most recent.</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title notranslate" data-i18n="s3_2Title">📏 The timeline</div>
+                    <div class="section-text notranslate" data-i18n="s3_2Text">A timeline shows historical events on a straight line. The <strong>oldest events</strong> are on the left and the <strong>most recent</strong> are on the right.</div>
+                    <div class="timeline-visual">
+                        <div class="tl-label notranslate" data-i18n="tlOlder">Older</div>
+                        <div class="tl-line"></div>
+                        <div class="tl-label notranslate" data-i18n="tlRecent">More recent</div>
+                    </div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title notranslate" data-i18n="s3_3Title">📅 The calendar: before and after Christ</div>
+                    <div class="section-text notranslate" data-i18n="s3_3Text">In much of the world we use the Christian calendar (Gregorian calendar). This system orders dates using the <strong>birth of Jesus Christ</strong> as the reference point.</div>
+                    <div class="section-text notranslate" data-i18n="s3_3TwoPeriods" style="margin-top:.4rem; margin-bottom:.4rem;">There are two main periods:</div>
+                    <div class="acdc-row">
+                        <div class="acdc-badge">
+                            <div class="acdc-abbr notranslate" data-i18n="acAbbr">BC</div>
+                            <div class="acdc-desc notranslate" data-i18n="acDesc">Before Christ. The years before the birth of Christ.</div>
+                        </div>
+                        <div class="acdc-badge orange-badge">
+                            <div class="acdc-abbr notranslate" data-i18n="dcAbbr">AD</div>
+                            <div class="acdc-desc notranslate" data-i18n="dcDesc">After Christ (Anno Domini). The years after the birth of Christ.</div>
+                        </div>
+                    </div>
+                    <div class="section-text notranslate" data-i18n="s3_3Example" style="margin-top:.5rem;">We are currently in the year <strong>2026 AD</strong>, which means about 2026 years have passed since the birth of Christ.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Prehistory -->
+        <div class="accordion-block amber">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <div class="header-left">
+                    <span class="section-icon notranslate" data-i18n="num4">🦴</span>
+                    <div class="section-title notranslate" data-i18n="s4Title">Prehistory</div>
+                </div>
+                <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="accordion-content">
+                <div class="section-text notranslate" data-i18n="s4Intro">Prehistory is the longest period of human history. It goes from the appearance of the first humans until the invention of writing.</div>
+                <div class="eras-grid">
+                    <div class="era-card paleolith">
+                        <div class="era-title notranslate" data-i18n="s4paleoTitle">PALEOLITHIC</div>
+                        <div class="era-date notranslate" data-i18n="s4paleoDate">2 million years ago</div>
+                        <div class="era-main-point notranslate" data-i18n="s4paleoMain">Humans appear</div>
+                        <ul class="era-details notranslate" data-i18n="s4paleoDetails">
+                            <li>They lived by hunting, fishing and gathering.</li>
+                            <li>Lived in tribes in caves and huts.</li>
+                            <li>They were nomads.</li>
+                            <li>Made tools with stone, wood and bones.</li>
+                            <li>Learned to master fire.</li>
+                        </ul>
+                    </div>
+                    <div class="era-card neolith">
+                        <div class="era-title notranslate" data-i18n="s4neoTitle">NEOLITHIC</div>
+                        <div class="era-date notranslate" data-i18n="s4neoDate">12,000 years ago</div>
+                        <div class="era-main-point notranslate" data-i18n="s4neoMain">Agriculture and livestock</div>
+                        <ul class="era-details notranslate" data-i18n="s4neoDetails">
+                            <li>Agriculture and livestock farming appear.</li>
+                            <li>They live in settlements.</li>
+                            <li>They become sedentary.</li>
+                            <li>Invent the wheel and use pottery for vessels.</li>
+                        </ul>
+                    </div>
+                    <div class="era-card metals">
+                        <div class="era-title notranslate" data-i18n="s4metalsTitle">METAL AGES</div>
+                        <div class="era-date notranslate" data-i18n="s4metalsDate">6,000 years ago</div>
+                        <div class="era-main-point notranslate" data-i18n="s4metalsMain">Use of metals</div>
+                        <ul class="era-details notranslate" data-i18n="s4metalsDetails">
+                            <li>Learn to use metals: copper, bronze and iron.</li>
+                            <li>Make metal coins.</li>
+                            <li>Build walled cities.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. History -->
+        <div class="accordion-block rose">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <div class="header-left">
+                    <span class="section-icon notranslate" data-i18n="num5">📜</span>
+                    <div class="section-title notranslate" data-i18n="s5Title">History</div>
+                </div>
+                <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="accordion-content">
+                <div class="section-text notranslate" data-i18n="s5Intro">History begins with the invention of writing and continues to the present day. It is divided into four major stages:</div>
+                <div class="eras-grid history-grid">
+                    <div class="era-card ancient">
+                        <div class="era-title notranslate" data-i18n="s5ancientTitle">ANCIENT AGE</div>
+                        <div class="era-date notranslate" data-i18n="s5ancientDate">3,500 BC</div>
+                        <div class="era-main-point notranslate" data-i18n="s5ancientMain">Invention of writing</div>
+                        <ul class="era-details notranslate" data-i18n="s5ancientDetails">
+                            <li>Great civilizations appear: Egypt, Greece and Rome.</li>
+                        </ul>
+                    </div>
+                    <div class="era-card middle">
+                        <div class="era-title notranslate" data-i18n="s5middleTitle">MIDDLE AGES</div>
+                        <div class="era-date notranslate" data-i18n="s5middleDate">476 AD</div>
+                        <div class="era-main-point notranslate" data-i18n="s5middleMain">Fall of the Roman Empire</div>
+                        <ul class="era-details notranslate" data-i18n="s5middleDetails">
+                            <li>Time of knights, kings and castles.</li>
+                        </ul>
+                    </div>
+                    <div class="era-card modern">
+                        <div class="era-title notranslate" data-i18n="s5modernTitle">MODERN AGE</div>
+                        <div class="era-date notranslate" data-i18n="s5modernDate">1,492 AD</div>
+                        <div class="era-main-point notranslate" data-i18n="s5modernMain">Discovery of America</div>
+                        <ul class="era-details notranslate" data-i18n="s5modernDetails">
+                            <li>Time of great voyages, discoveries and inventions (telescope).</li>
+                        </ul>
+                    </div>
+                    <div class="era-card contemp">
+                        <div class="era-title notranslate" data-i18n="s5contempTitle">CONTEMPORARY AGE</div>
+                        <div class="era-date notranslate" data-i18n="s5contempDate">1,789 AD</div>
+                        <div class="era-main-point notranslate" data-i18n="s5contempMain">French Revolution</div>
+                        <ul class="era-details notranslate" data-i18n="s5contempDetails">
+                            <li>Our time: cars, space travel, mobiles, internet…</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Generations and Family Tree -->
+        <div class="accordion-block purple">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <div class="header-left">
+                    <span class="section-icon notranslate" data-i18n="num6">👨‍👩‍👧‍👦</span>
+                    <div class="section-title notranslate" data-i18n="s6Title">Generations and the Family Tree</div>
+                </div>
+                <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="accordion-content">
+                <div class="sub-section" style="margin-top:0">
+                    <div class="sub-title notranslate" data-i18n="s6_1Title">👥 The generation</div>
+                    <div class="section-text notranslate" data-i18n="s6_1Text">A generation is a <strong>group of people born at about the same time</strong>. Because of this, they have lived through similar historical events.</div>
+                    <div class="section-text notranslate" data-i18n="s6_1Example" style="font-style:italic; color:#6b7280;">For example: your grandparents belong to one generation, your parents to a different one, and you belong to a different generation from them.</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title notranslate" data-i18n="s6_2Title">🌳 The family tree</div>
+                    <div class="section-text notranslate" data-i18n="s6_2Text">A family tree is a <strong>visual diagram</strong> of the members of a family. It helps you see family relationships clearly and in order.</div>
+                    <div class="section-text notranslate" data-i18n="s6_2Rules" style="margin-top:.3rem;">It follows these rules:</div>
+                    <ul class="source-list">
+                        <li class="notranslate" data-i18n="s6_2Rule1">Each level of the tree represents a different generation.</li>
+                        <li class="notranslate" data-i18n="s6_2Rule2">The oldest members (grandparents) appear at the top.</li>
+                        <li class="notranslate" data-i18n="s6_2Rule3">The youngest members (children, grandchildren) appear at the bottom.</li>
+                        <li class="notranslate" data-i18n="s6_2Rule4">The lines connecting members show the family relationship between them.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Cultural Heritage -->
+        <div class="accordion-block teal">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <div class="header-left">
+                    <span class="section-icon notranslate" data-i18n="num7">🏛️</span>
+                    <div class="section-title notranslate" data-i18n="s7Title">Cultural Heritage</div>
+                </div>
+                <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="accordion-content">
+                <div class="section-text notranslate" data-i18n="s7Text">Cultural heritage is the set of <strong>goods, customs, knowledge and artistic expressions</strong> that a society has inherited from the past. It is part of a people's identity and must be cared for and protected.</div>
+                <div class="heritage-grid">
+                    <div class="heritage-card">
+                        <div class="heritage-card-title notranslate" data-i18n="s7MaterialTitle">🏛️ Material heritage</div>
+                        <div class="heritage-card-text notranslate" data-i18n="s7MaterialText">Monuments, historic buildings, works of art, archaeological sites…</div>
+                    </div>
+                    <div class="heritage-card">
+                        <div class="heritage-card-title notranslate" data-i18n="s7ImmaterialTitle">🎶 Immaterial heritage</div>
+                        <div class="heritage-card-text notranslate" data-i18n="s7ImmaterialText">Traditional festivals, languages, folk music, gastronomy, traditional crafts…</div>
+                    </div>
+                </div>
+                <div class="section-text notranslate" data-i18n="s7Responsibility" style="margin-top:.8rem;">Looking after cultural heritage is everyone's responsibility. Public institutions, such as local councils, governments and international organisations (like <strong>UNESCO</strong>), work to identify, conserve and share it.</div>
+            </div>
+        </div>
+
+        <!-- Remember -->
+        <div class="remember-box">
+            <div class="remember-label notranslate" data-i18n="rememberLabel">💡 Remember</div>
+            <p class="notranslate" data-i18n="rememberText">History teaches us to know our past in order to understand the present and build a better future. <strong>Historical sources, chronological order, the calendar, generations and cultural heritage</strong> are essential tools for studying it.</p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Accordion Logic
+    function toggleAccordion(header) {
+        const block = header.parentElement;
+        block.classList.toggle('open');
+    }
+
+    // Language Logic
+    let currentLang = 'en';
+
+    const translations = {
+        en: {
+            mainTitle: "History", mainSubtitle: "Key Concepts",
+            num1: "📖", num2: "🗺️", num3: "⏳", num4: "🦴", num5: "📜", num6: "👨‍👩‍👧‍👦", num7: "🏛️",
+            s1Title: "What is History?",
+            s1Text: "History is the subject that studies the <strong>past of humanity</strong>. Thanks to History, we can understand how people lived in the past and understand the world we live in today much better.",
+            s2Title: "Historical Sources",
+            s2Intro: "Historical sources are all the things that give us <strong>information about the past</strong>. There are different types:",
+            s2WrittenTitle: "✍️ Written sources", s2WrittenText: "Documents, letters, books, laws…",
+            s2NonWrittenTitle: "🗿 Non-written sources",
+            s2Material: "<strong>Material sources:</strong> buildings, tools, coins, sculptures…",
+            s2Oral: "<strong>Oral sources:</strong> stories and traditions passed down from generation to generation.",
+            s2Visual: "<strong>Visual sources:</strong> paintings, photographs, maps…",
+            s3Title: "Historical Time",
+            s3_1Title: "🕒 Chronological order", s3_1Text: "Chronological order means putting events in order by the <strong>date they happened</strong>, from the oldest to the most recent.",
+            s3_2Title: "📏 The timeline", s3_2Text: "A timeline shows historical events on a straight line. The <strong>oldest events</strong> are on the left and the <strong>most recent</strong> are on the right.",
+            tlOlder: "Older", tlRecent: "More recent",
+            s3_3Title: "📅 The calendar: before and after Christ",
+            s3_3Text: "In much of the world we use the Christian calendar (Gregorian calendar). This system orders dates using the <strong>birth of Jesus Christ</strong> as the reference point.",
+            s3_3TwoPeriods: "There are two main periods:",
+            acAbbr: "BC", acDesc: "Before Christ. The years before the birth of Christ.",
+            dcAbbr: "AD", dcDesc: "After Christ (Anno Domini). The years after the birth of Christ.",
+            s3_3Example: "We are currently in the year <strong>2026 AD</strong>, which means about 2026 years have passed since the birth of Christ.",
+            s4Title: "Prehistory",
+            s4Intro: "Prehistory is the longest period of human history. It goes from the appearance of the first humans until the invention of writing.",
+            s4paleoTitle: "PALEOLITHIC", s4paleoDate: "2 million years ago", s4paleoMain: "Humans appear",
+            s4paleoDetails: "<li>They lived by hunting, fishing and gathering.</li><li>Lived in tribes in caves and huts.</li><li>They were nomads.</li><li>Made tools with stone, wood and bones.</li><li>Learned to master fire.</li>",
+            s4neoTitle: "NEOLITHIC", s4neoDate: "12,000 years ago", s4neoMain: "Agriculture and livestock",
+            s4neoDetails: "<li>Agriculture and livestock farming appear.</li><li>They live in settlements.</li><li>They become sedentary.</li><li>Invent the wheel and use pottery for vessels.</li>",
+            s4metalsTitle: "METAL AGES", s4metalsDate: "6,000 years ago", s4metalsMain: "Use of metals",
+            s4metalsDetails: "<li>Learn to use metals: copper, bronze and iron.</li><li>Make metal coins.</li><li>Build walled cities.</li>",
+            s5Title: "History",
+            s5Intro: "History begins with the invention of writing and continues to the present day. It is divided into four major stages:",
+            s5ancientTitle: "ANCIENT AGE", s5ancientDate: "3,500 BC", s5ancientMain: "Invention of writing",
+            s5ancientDetails: "<li>Great civilizations appear: Egypt, Greece and Rome.</li>",
+            s5middleTitle: "MIDDLE AGES", s5middleDate: "476 AD", s5middleMain: "Fall of the Roman Empire",
+            s5middleDetails: "<li>Time of knights, kings and castles.</li>",
+            s5modernTitle: "MODERN AGE", s5modernDate: "1,492 AD", s5modernMain: "Discovery of America",
+            s5modernDetails: "<li>Time of great voyages, discoveries and inventions (telescope).</li>",
+            s5contempTitle: "CONTEMPORARY AGE", s5contempDate: "1,789 AD", s5contempMain: "French Revolution",
+            s5contempDetails: "<li>Our time: cars, space travel, mobiles, internet…</li>",
+            s6Title: "Generations and the Family Tree",
+            s6_1Title: "👥 The generation", s6_1Text: "A generation is a <strong>group of people born at about the same time</strong>. Because of this, they have lived through similar historical events.",
+            s6_1Example: "For example: your grandparents belong to one generation, your parents to a different one, and you belong to a different generation from them.",
+            s6_2Title: "🌳 The family tree", s6_2Text: "A family tree is a <strong>visual diagram</strong> of the members of a family. It helps you see family relationships clearly and in order.",
+            s6_2Rules: "It follows these rules:",
+            s6_2Rule1: "Each level of the tree represents a different generation.",
+            s6_2Rule2: "The oldest members (grandparents) appear at the top.",
+            s6_2Rule3: "The youngest members (children, grandchildren) appear at the bottom.",
+            s6_2Rule4: "The lines connecting members show the family relationship between them.",
+            s7Title: "Cultural Heritage",
+            s7Text: "Cultural heritage is the set of <strong>goods, customs, knowledge and artistic expressions</strong> that a society has inherited from the past. It is part of a people's identity and must be cared for and protected.",
+            s7MaterialTitle: "🏛️ Material heritage", s7MaterialText: "Monuments, historic buildings, works of art, archaeological sites…",
+            s7ImmaterialTitle: "🎶 Immaterial heritage", s7ImmaterialText: "Traditional festivals, languages, folk music, gastronomy, traditional crafts…",
+            s7Responsibility: "Looking after cultural heritage is everyone's responsibility. Public institutions, such as local councils, governments and international organisations (like <strong>UNESCO</strong>), work to identify, conserve and share it.",
+            rememberLabel: "💡 Remember",
+            rememberText: "History teaches us to know our past in order to understand the present and build a better future. <strong>Historical sources, chronological order, the calendar, generations and cultural heritage</strong> are essential tools for studying it."
+        },
+        es: {
+            mainTitle: "Historia", mainSubtitle: "Conceptos Fundamentales",
+            num1: "📖", num2: "🗺️", num3: "⏳", num4: "🦴", num5: "📜", num6: "👨‍👩‍👧‍👦", num7: "🏛️",
+            s1Title: "¿Qué es la Historia?",
+            s1Text: "La Historia es la ciencia que estudia el <strong>pasado de la humanidad</strong>. Gracias a la Historia podemos entender cómo vivían las personas en el pasado y comprender mejor el mundo en el que vivimos hoy.",
+            s2Title: "Las Fuentes Históricas",
+            s2Intro: "Las fuentes históricas son todos los restos que nos proporcionan <strong>información sobre el pasado</strong>.",
+            s2WrittenTitle: "✍️ Fuentes escritas", s2WrittenText: "Documentos, cartas, libros, leyes…",
+            s2NonWrittenTitle: "🗿 Fuentes no escritas",
+            s2Material: "<strong>Fuentes materiales:</strong> edificios, herramientas, monedas, esculturas…",
+            s2Oral: "<strong>Fuentes orales:</strong> relatos y tradiciones transmitidos de generación en generación.",
+            s2Visual: "<strong>Fuentes visuales:</strong> pinturas, fotografías, mapas…",
+            s3Title: "El Tiempo Histórico",
+            s3_1Title: "🕒 El orden cronológico", s3_1Text: "El orden cronológico consiste en ordenar los sucesos según la <strong>fecha en que ocurrieron</strong>, desde el más antiguo hasta el más reciente.",
+            s3_2Title: "📏 La línea del tiempo", s3_2Text: "La línea del tiempo permite representar los acontecimientos históricos sobre una línea recta. Los hechos <strong>más antiguos</strong> se sitúan a la izquierda y los <strong>más recientes</strong>, a la derecha.",
+            tlOlder: "Más antiguo", tlRecent: "Más reciente",
+            s3_3Title: "📅 El calendario: antes y después de Cristo",
+            s3_3Text: "En gran parte del mundo usamos el calendario cristiano (gregoriano). Este sistema ordena las fechas tomando como punto de referencia el <strong>nacimiento de Jesucristo</strong>.",
+            s3_3TwoPeriods: "Se utilizan dos grandes períodos:",
+            acAbbr: "a.C.", acDesc: "Antes de Cristo. Son los años anteriores al nacimiento de Cristo.",
+            dcAbbr: "d.C.", dcDesc: "Después de Cristo. Son los años posteriores al nacimiento de Cristo.",
+            s3_3Example: "Actualmente estamos en el año <strong>2026 d.C.</strong>, lo que significa que han pasado aproximadamente 2026 años desde el nacimiento de Cristo.",
+            s4Title: "Prehistoria",
+            s4Intro: "La Prehistoria es la etapa más larga de la historia de la humanidad. Va desde la aparición de los primeros humanos hasta la invención de la escritura.",
+            s4paleoTitle: "PALEOLÍTICO", s4paleoDate: "Hace 2 millones de años", s4paleoMain: "Aparece el ser humano",
+            s4paleoDetails: "<li>Viven de la caza, pesca y recolección.</li><li>Vivían en tribus en cuevas y chozas.</li><li>Eran nómadas.</li><li>Hacen herramientas con piedras, madera y huesos.</li><li>Aprenden a dominar el fuego.</li>",
+            s4neoTitle: "NEOLÍTICO", s4neoDate: "Hace 12.000 años", s4neoMain: "Agricultura y ganadería",
+            s4neoDetails: "<li>Aparece la agricultura y la ganadería.</li><li>Viven en poblados.</li><li>Se hacen sedentarios.</li><li>Inventan la rueda y emplean cerámica para vasijas.</li>",
+            s4metalsTitle: "EDAD DE LOS METALES", s4metalsDate: "Hace 6.000 años", s4metalsMain: "Uso de metales",
+            s4metalsDetails: "<li>Aprenden a usar los metales: cobre, bronce y hierro.</li><li>Fabrican monedas de metal.</li><li>Construyen ciudades amuralladas.</li>",
+            s5Title: "Historia",
+            s5Intro: "La Historia comienza con la invención de la escritura y llega hasta nuestros días. Se divide en cuatro grandes etapas:",
+            s5ancientTitle: "EDAD ANTIGUA", s5ancientDate: "3.500 a.C.", s5ancientMain: "Invención de la escritura",
+            s5ancientDetails: "<li>Aparecen grandes civilizaciones: Egipto, Grecia y Roma.</li>",
+            s5middleTitle: "EDAD MEDIA", s5middleDate: "476 d.C.", s5middleMain: "Cae el Imperio Romano",
+            s5middleDetails: "<li>Época de los caballeros, reyes y los castillos.</li>",
+            s5modernTitle: "EDAD MODERNA", s5modernDate: "1.492 d.C.", s5modernMain: "Descubrimiento de América",
+            s5modernDetails: "<li>Época de grandes viajes, descubrimientos e inventos (telescopio).</li>",
+            s5contempTitle: "EDAD CONTEMPORÁNEA", s5contempDate: "1.789 d.C.", s5contempMain: "Revolución Francesa",
+            s5contempDetails: "<li>Nuestra época: coches, viajes espaciales, móviles, internet…</li>",
+            s6Title: "Las Generaciones y el Árbol Genealógico",
+            s6_1Title: "👥 La generación", s6_1Text: "Una generación es un <strong>grupo de personas que han nacido en la misma época</strong> y que, por tanto, han vivido experiencias históricas similares.",
+            s6_1Example: "Ejemplo: tus abuelos pertenecen a una generación, tus padres a otra distinta, y tú perteneces a una generación diferente a la de ellos.",
+            s6_2Title: "🌳 El árbol genealógico", s6_2Text: "El árbol genealógico es una <strong>representación gráfica</strong> de los miembros de una familia. Permite ver las relaciones familiares de forma clara y ordenada.",
+            s6_2Rules: "Su organización sigue estas normas:",
+            s6_2Rule1: "Cada nivel del árbol representa una generación diferente.",
+            s6_2Rule2: "Los miembros más antiguos (abuelos) aparecen en la parte superior.",
+            s6_2Rule3: "Los más jóvenes (hijos, nietos) aparecen en la parte inferior.",
+            s6_2Rule4: "Las líneas que unen a los miembros indican la relación familiar entre ellos.",
+            s7Title: "El Patrimonio Cultural",
+            s7Text: "El patrimonio cultural es el conjunto de <strong>bienes, costumbres, conocimientos y manifestaciones artísticas</strong> que una sociedad ha heredado del pasado. Forma parte de la identidad de un pueblo y debe ser cuidado y protegido.",
+            s7MaterialTitle: "🏛️ Patrimonio material", s7MaterialText: "Monumentos, edificios históricos, obras de arte, yacimientos arqueológicos…",
+            s7ImmaterialTitle: "🎶 Patrimonio inmaterial", s7ImmaterialText: "Fiestas tradicionales, lenguas, música popular, gastronomía, oficios artesanales…",
+            s7Responsibility: "Cuidar el patrimonio cultural es una responsabilidad de toda la sociedad. Las instituciones públicas, como los ayuntamientos, los gobiernos y los organismos internacionales (como la <strong>UNESCO</strong>), trabajan para identificarlo, conservarlo y difundirlo.",
+            rememberLabel: "💡 Recuerda",
+            rememberText: "La Historia nos enseña a conocer nuestro pasado para entender el presente y construir un futuro mejor. <strong>Las fuentes históricas, el orden cronológico, el calendario, las generaciones y el patrimonio cultural</strong> son herramientas esenciales para estudiarla."
+        }
+    };
+
+    function t(key) { return (translations[currentLang] && translations[currentLang][key]) || translations['en'][key] || key; }
+
+    function applyLanguage(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            const val = t(key);
+            if (val !== undefined) el.innerHTML = val;
+        });
+        const flagEN = document.getElementById('flagEN');
+        const flagES = document.getElementById('flagES');
+        if (lang === 'en') {
+            flagEN.classList.add('active'); flagEN.classList.remove('inactive');
+            flagES.classList.add('inactive'); flagES.classList.remove('active');
+        } else {
+            flagES.classList.add('active'); flagES.classList.remove('inactive');
+            flagEN.classList.add('inactive'); flagEN.classList.remove('active');
+        }
+    }
+
+    document.getElementById('flagEN').onclick = () => applyLanguage('en');
+    document.getElementById('flagES').onclick = () => applyLanguage('es');
+</script>
+</body>
+</html>
